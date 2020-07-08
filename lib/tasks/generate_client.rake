@@ -1,5 +1,6 @@
 require 'open-uri'
 require 'fileutils'
+require 'active_support/core_ext/string/strip'
 require_relative '../openstax/swagger/swagger_codegen'
 require_relative '../openstax/swagger/bundle_js_client'
 

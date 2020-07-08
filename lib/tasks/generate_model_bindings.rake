@@ -1,5 +1,6 @@
 require 'open-uri'
 require 'fileutils'
+require 'active_support/core_ext/string/strip'
 require_relative '../openstax/swagger/swagger_codegen'
 
 namespace :openstax_swagger do
