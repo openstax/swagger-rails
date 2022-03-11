@@ -2,11 +2,10 @@ class SchemaOne
   include Swagger::Blocks
   include OpenStax::Swagger::SwaggerBlocksExtensions
 
-  ACCEPT_HEADER = 'application/json'
   BASE_PATH = '/api/v0'
 
   swagger_root do
-    key :swagger, '2.0'
+    key :openapi, '3.0.0'
     info do
       key :version, '0.1.0'
       key :title, 'A Title'
@@ -18,9 +17,9 @@ class SchemaOne
         key :name, 'MIT'
       end
     end
-    key :basePath, BASE_PATH
-    key :consumes, [ACCEPT_HEADER]
-    key :produces, ['application/json']
+    server do
+      key :url, BASE_PATH
+    end
   end
 
   swagger_schema :AnArrayItem do

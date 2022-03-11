@@ -6,13 +6,22 @@ module OpenStax::Swagger::SwaggerBlocksExtensions
 
   module ClassMethods
     def add_properties(*schema_names, &block)
+      node = @swagger_components_node || swagger_component {}
       schema_names.each do |schema_name|
-        swagger_schema schema_name do
+        node.schema schema_name do
           instance_eval(&block)
         end
       end
     end
 
+    def add_components(&block)
+      node = @swagger_components_node
+      if node.nil?
+        swagger_component { instance_eval(&block) }
+      else
+        node.instance_eval(&block)
+      end
+    end
     # Same as call to `swagger_path` but also generates a `swagger_schema` for the parameters
     # so that controller code can bind the parameters to a binding.
     def swagger_path_and_parameters_schema(path, &block)
