@@ -36,7 +36,7 @@ RSpec.describe 'bind' do
       expect(error).to be_nil
       expect(binding.an_integer).to eq 42
       expect(binding.an_arbitrary_object).to eq arbitrary_object.with_indifferent_access
-      expect(binding.a_defined_object.an_array[2].a_string).to eq "ma"
+      expect(binding.a_defined_object['an_array'][2]['a_string']).to eq "ma"
     end
 
     it 'binds to a simple hash' do
@@ -44,13 +44,14 @@ RSpec.describe 'bind' do
       expect(error).to be_nil
       expect(binding.an_integer).to eq 42
       expect(binding.an_arbitrary_object.with_indifferent_access).to eq arbitrary_object.with_indifferent_access
-      expect(binding.a_defined_object.an_array[2].a_string).to eq "ma"
+      expect(binding.a_defined_object['an_array'][2]['a_string']).to eq "ma"
     end
 
-    it 'has bound nested items that detect invalidity' do
-      valid_params[:a_defined_object][:an_array] = %w(yo yo ma)
-      binding, error = bind(valid_params, Api::V0::Bindings::TopLevel)
-      expect(binding.a_defined_object.an_array[2]).not_to be_valid
+    it 'has bound items that detect invalidity' do
+      binding, error = bind({}, Api::V0::Bindings::TopLevel)
+      expect(error).to be_present
+      expect(error.messages.first).to match(/an_integer cannot be nil/)
+      expect(binding).not_to be_valid
     end
 
     xit 'can check for deep invalidity' do

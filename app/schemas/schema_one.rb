@@ -22,38 +22,40 @@ class SchemaOne
     end
   end
 
-  swagger_schema :AnArrayItem do
-    key :required, [:a_string]
-    property :a_string do
-      key :type, :string
-    end
-  end
+  add_components do
 
-  swagger_schema :TopLevel do
-    key :required, [:an_integer]
-    property :an_integer do
-      key :type, :integer
-      key :readOnly, true
-      key :description, "Something"
+    schema :AnArrayItem do
+      key :required, [:a_string]
+      property :a_string do
+        key :type, :string
+      end
     end
-    property :an_arbitrary_object do
-      key :type, :object
-      key :readOnly, true
-    end
-    property :a_defined_object do
-      key :required, [:another_integer]
-      property :another_integer do
+
+    schema :TopLevel do
+      key :required, [:an_integer]
+      property :an_integer do
         key :type, :integer
         key :readOnly, true
+        key :description, "Something"
       end
-      property :an_array do
-        key :type, :array
-        key :description, "An array"
-        items do
-          key :'$ref', :AnArrayItem
+      property :an_arbitrary_object do
+        key :type, :object
+        key :readOnly, true
+      end
+      property :a_defined_object do
+        key :required, [:another_integer]
+        property :another_integer do
+          key :type, :integer
+          key :readOnly, true
+        end
+        property :an_array do
+          key :type, :array
+          key :description, "An array"
+          items do
+            key :'$ref', :AnArrayItem
+          end
         end
       end
     end
   end
-
 end

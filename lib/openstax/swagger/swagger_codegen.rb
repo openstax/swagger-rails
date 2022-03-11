@@ -26,7 +26,7 @@ module OpenStax::Swagger::SwaggerCodegen
         config_file.flush
 
         # Build and run the swagger-codegen command
-        puts system('openapi-codegen', 'generate',
+        puts system('openapi-generator', 'generate',
                     '-i', swagger_json.path,
                     '-o', options[:output_dir],
                     '-c', config_file.path,

@@ -18,7 +18,8 @@ module OpenStax::Swagger
         keys_in_data = data.keys.map(&:to_s)
 
         unused_keys = keys_in_data - keys_in_binding
-        keys_that_did_not_get_bound = unused_keys & bindings_class.swagger_types.keys.map(&:to_s)
+
+        keys_that_did_not_get_bound = unused_keys & bindings_class.acceptable_attributes
         unrequested_keys = unused_keys - keys_that_did_not_get_bound
 
         if keys_that_did_not_get_bound.any?
