@@ -34,5 +34,6 @@ module OpenStax
 end
 
 require "swagger/blocks"
+require "openstax/swagger/record_extensions"
 require "openstax/swagger/swagger_blocks_extensions"
 require "openstax/swagger/bind"
