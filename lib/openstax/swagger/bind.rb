@@ -3,6 +3,32 @@ module OpenStax::Swagger
 
     protected
 
+    def self.recursively_list_invalid_properties(object)
+      if object.respond_to?(:valid?)
+        if object.valid?
+          klass = object.class
+          klass.respond_to?(:attribute_map) ? klass.attribute_map.flat_map do |attr, _|
+            value = object.send(attr)
+            invalid_properties = recursively_list_invalid_properties value
+            invalid_properties.empty? ? [] : [ "#{attr}: [ #{invalid_properties.join(', ')} ]" ]
+          end : [ "#{klass} is valid but does not respond to #attribute_map" ]
+        else
+          object.respond_to?(:list_invalid_properties) ?
+            object.list_invalid_properties :
+            [ "#{object} is invalid but does not respond to #list_invalid_properties" ]
+        end
+      else
+        case object
+        when Array
+          object.flat_map { |item| recursively_list_invalid_properties item }
+        when Hash
+          object.flat_map { |_, value| recursively_list_invalid_properties value }
+        else
+          []
+        end
+      end
+    end
+
     def bind(data, bindings_class)
       begin
         # If `data` is a set of controller params, permit all the fields in them.  The binding
@@ -33,9 +59,11 @@ module OpenStax::Swagger
         return [nil, binding_error(status_code: 422, messages: [ee.message])]
       end
 
-      return [binding, nil] if binding.valid?
+      invalid_properties = OpenStax::Swagger::Bind.recursively_list_invalid_properties binding
 
-      [binding, binding_error(status_code: 422, messages: binding.list_invalid_properties)]
+      return [binding, nil] if invalid_properties.empty?
+
+      [binding, binding_error(status_code: 422, messages: invalid_properties)]
     end
 
     def binding_error(status_code:, messages:)

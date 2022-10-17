@@ -53,15 +53,14 @@ RSpec.describe 'bind' do
       expect(binding.a_defined_object.an_array[2]).not_to be_valid
     end
 
-    xit 'can check for deep invalidity' do
-      # Here the array items nested down a few levels are invalid, but the `.valid?` check
-      # on the top level bound item doesn't recursively check validity, so it goes unnoticed.
-      # If we want to use the bindings for schema validation, we'll need a way to get around
-      # this.  Or we should use a separate schema validator.
-
+    it 'can check for deep invalidity' do
       valid_params[:a_defined_object][:an_array] = %w(yo yo ma)
       binding, error = bind(valid_params, Api::V0::Bindings::TopLevel)
-      expect(error).not_to be_nil
+      expect(error.messages).to eq [
+        "a_defined_object: [ an_array: [ #{
+          ([ 'invalid value for "a_string", a_string cannot be nil.' ] * 3).join(', ')
+        } ] ]"
+      ]
     end
 
   end
